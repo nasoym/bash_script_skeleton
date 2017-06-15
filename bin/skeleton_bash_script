@@ -5,32 +5,39 @@ set -o errexit  # abort when any commands exits with error
 set -o pipefail # abort when any command in a pipe exits with error
 set -o nounset  # abort when any unset variable is used
 set -f # prevent bash from expanding glob
+trap 'echo "$0: line ${LINENO}: exiting because of error";exit 1' ERR
+trap 'echo "finalize"' EXIT
 
-# source $(dirname $(realpath $0))/helper
+source $(dirname $(realpath $0))/lib/helper
 
-error() {
-  echo "$0: line $1: exiting because of error"
-  exit 1
+function help() {
+  cat $0 \
+    | grep -B1 "^\(if\|elif\).*\$1" \
+    | sed \
+      -e 's/^.*\[\[/[/g' \
+      -e 's/]].*$/]/g' \
+      -e '/^--$/d' \
+      -e '/^$/d'
 }
-trap 'error ${LINENO}' ERR
 
-while getopts "a:h" options; do case $options in
+while getopts "a:hx" options; do case $options in
   a) a="$OPTARG" ;;
-  h) h=1 ;;
+  h) help; exit ;;
+  x) set -x ;;
 esac; done; shift $((OPTIND - 1))
 
+[[ -r ~/.$(basename ${0})rc ]] && { source ~/.$(basename ${0})rc; }
 : ${hello_file:="$(dirname $(realpath $0))/hello"}
 : ${a:="default for var a"}
 
-if [[ -r ~/.$(basename ${0})rc ]];then
-  source ~/.$(basename ${0})rc 
-fi
-
-if [[ "$#" -eq 0 ]] ;then
+if [[ "$#" -eq 0 ]];then
   :
 
 elif [[ "$1" == "hello" ]];then shift
   cat $hello_file
+
+elif [[ "$1" == "helper" ]];then shift
+  helper
 
 elif [[ "$1" == "password" ]];then shift
   echo "password:$password"
@@ -38,6 +45,7 @@ elif [[ "$1" == "password" ]];then shift
 elif [[ "$1" == "a" ]];then shift
   echo "a:$a"
 
+# trap can show the line of an error
 elif [[ "$1" == "error" ]];then shift
   echo "before false"
   false
@@ -53,6 +61,9 @@ elif [[ "$1" == "stdin" ]];then shift
   else
     echo "stdin:no"
   fi
+
+else
+  echo "unknown command: $1"
 
 fi
 
