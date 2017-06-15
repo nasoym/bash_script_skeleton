@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# use this hash bang instead of /bin/bash in order to be independent of the actual path of bash
+
+set -o errexit  # abort when any commands exits with error
+set -o pipefail # abort when any command in a pipe exits with error
+set -o nounset  # abort when any unset variable is used
+set -f # prevent bash from expanding glob
+
+# source $(dirname $(realpath $0))/helper
+
+error() {
+  echo "$0: line $1: exiting because of error"
+  exit 1
+}
+trap 'error ${LINENO}' ERR
+
+while getopts "a:h" options; do case $options in
+  a) a="$OPTARG" ;;
+  h) h=1 ;;
+esac; done; shift $((OPTIND - 1))
+
+: ${hello_file:="$(dirname $(realpath $0))/hello"}
+: ${a:="default for var a"}
+
+if [[ -r ~/.$(basename ${0})rc ]];then
+  source ~/.$(basename ${0})rc 
+fi
+
+if [[ "$#" -eq 0 ]] ;then
+  :
+
+elif [[ "$1" == "hello" ]];then shift
+  cat $hello_file
+
+elif [[ "$1" == "password" ]];then shift
+  echo "password:$password"
+
+elif [[ "$1" == "a" ]];then shift
+  echo "a:$a"
+
+elif [[ "$1" == "error" ]];then shift
+  echo "before false"
+  false
+  echo "after false"
+
+elif [[ "$1" =~ ^[0-9]*$ ]];then 
+  echo "number input: $1"
+
+elif [[ "$1" == "stdin" ]];then shift
+  if [[ ! -t 0 ]]; then
+    echo "stdin:yes"
+    echo "$(cat)"
+  else
+    echo "stdin:no"
+  fi
+
+fi
+

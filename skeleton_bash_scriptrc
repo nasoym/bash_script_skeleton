@@ -1,0 +1,1 @@
+: ${password:="$(seq 1 5 | tr -d '\n')"}
