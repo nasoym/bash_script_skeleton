@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# use this hash bang instead of /bin/bash in order to be independent of the actual path of bash
+# more portable than /bin/bash
 
 set -o errexit  # abort when any commands exits with error
 set -o pipefail # abort when any command in a pipe exits with error
 set -o nounset  # abort when any unset variable is used
 set -f # prevent bash from expanding glob
+#short: set -eufo pipefail
 trap 'echo "$0: line ${LINENO}: exiting because of error";exit 1' ERR
 trap 'echo "finalize"' EXIT
 
