@@ -21,10 +21,10 @@ function help() {
       -e '/^$/d'
 }
 
-while getopts "a:hx" options; do case $options in
+while getopts "a:xh?" options; do case $options in
   a) a="$OPTARG" ;;
-  h) help; exit ;;
   x) set -x ;;
+  h|?) help; exit ;;
 esac; done; shift $((OPTIND - 1))
 
 [[ -r ~/.$(basename ${0})rc ]] && { source ~/.$(basename ${0})rc; }
