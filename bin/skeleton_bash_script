@@ -59,9 +59,11 @@ elif [[ "$1" =~ ^[0-9]*$ ]];then
   echo "number input: $1"
 
 elif [[ "$1" == "stdin" ]];then shift
-  if [[ ! -t 0 ]]; then
+  if [[ -p /dev/stdin ]]; then
     echo "stdin:yes"
-    echo "$(cat)"
+    stdin_content="$(cat)"
+    echo "$stdin_content"
+    $0 stdin </dev/null
   else
     echo "stdin:no"
   fi
