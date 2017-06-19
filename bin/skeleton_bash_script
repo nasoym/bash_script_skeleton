@@ -13,10 +13,13 @@ source $(dirname $(realpath $0))/lib/helper
 
 function help() {
   cat $0 \
-    | grep -B1 "^\(if\|elif\).*\$1" \
+    | sed -n '/^while getopts/,/esac; done; shift/p' \
+    | sed -e '1d' -e '$d' -e 's/ ;;$//g' -e 's/^ *//g'
+  cat $0 \
+    | grep -B1 "^\s*\(if\|elif\).*\$1.*then" \
     | sed \
-      -e 's/^.*\[\[/[/g' \
-      -e 's/]].*$/]/g' \
+      -e 's/^[^[]*\[\+/[/g' \
+      -e 's/]\+\s*;.*$/]/g' \
       -e '/^--$/d' \
       -e '/^$/d'
 }
