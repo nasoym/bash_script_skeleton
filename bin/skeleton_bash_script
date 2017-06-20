@@ -65,6 +65,7 @@ elif [[ "$1" =~ ^[0-9]*$ ]];then
   echo "number input: $1"
 
 elif [[ "$1" == "stdin" ]];then shift
+  # -p file is a pipe
   if [[ -p /dev/stdin ]]; then
     echo "stdin:yes"
     stdin_content="$(cat)"
