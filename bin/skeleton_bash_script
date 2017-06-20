@@ -33,6 +33,12 @@ esac; done; shift $((OPTIND - 1))
 [[ -r ~/.$(basename ${0})rc ]] && { source ~/.$(basename ${0})rc; }
 : ${hello_file:="$(dirname $(realpath $0))/hello"}
 : ${a:="default for var a"}
+: ${trace:=0}
+
+if [[ "$trace" -eq 1 ]];then
+  PS4='${LINENO}: '
+  set -x
+fi
 
 if [[ "$#" -eq 0 ]];then
   :
