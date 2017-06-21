@@ -24,9 +24,8 @@ function help() {
       -e '/^$/d'
 }
 
-while getopts "a:xh?" options; do case $options in
+while getopts "a:h?" options; do case $options in
   a) a="$OPTARG" ;;
-  x) set -x ;;
   h|?) help; exit ;;
 esac; done; shift $((OPTIND - 1))
 
@@ -76,7 +75,8 @@ elif [[ "$1" == "stdin" ]];then shift
   fi
 
 else
-  echo "unknown command: $1"
+  echo "unknown command: $@" >&2
+  exit 1
 
 fi
 
