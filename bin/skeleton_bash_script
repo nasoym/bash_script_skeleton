@@ -63,13 +63,31 @@ elif [[ "$1" == "error" ]];then shift
 elif [[ "$1" =~ ^[0-9]*$ ]];then 
   echo "number input: $1"
 
+elif [[ "$1" == "params" ]];then shift
+  echo "---- ${1:-"bb"}"
+  echo "---- ${1-"foo"}"
+  echo "all: $@"
+  if [[ "$#" -ge 1 ]];then
+    shift
+  fi
+  echo "all: $@"
+  [[ "$#" -ge 1 ]] && { shift; }
+  echo "all: $@"
+
 elif [[ "$1" == "stdin" ]];then shift
   # -p file is a pipe
   if [[ -p /dev/stdin ]]; then
     echo "stdin:yes"
     stdin_content="$(cat)"
-    echo "$stdin_content"
-    $0 stdin </dev/null
+    echo "old stdin: $stdin_content"
+
+    new_stdin="$(echo -n "${stdin_content}" | jq -s -R -r '.|split("")[0:-1]|join("")')"
+    echo "new stdin: $new_stdin"
+
+    if [[ -n "$new_stdin" ]];then
+      echo "$new_stdin" | $0 stdin 
+    fi
+    # </dev/null
   else
     echo "stdin:no"
   fi
