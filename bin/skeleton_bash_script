@@ -48,6 +48,11 @@ elif [[ "$1" == "hello" ]];then shift
 elif [[ "$1" == "helper" ]];then shift
   helper
 
+elif [[ "$1" == "one" ]];then shift
+  : ${one:="${1:-"blabla"}"}
+  echo "----${1:-"blabla"}----"
+  echo "one: $one"
+
 elif [[ "$1" == "password" ]];then shift
   echo "password:$password"
 
