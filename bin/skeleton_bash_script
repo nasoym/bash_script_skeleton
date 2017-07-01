@@ -30,6 +30,18 @@ while getopts "a:h?" options; do case $options in
 esac; done; shift $((OPTIND - 1))
 
 [[ -r ~/.$(basename ${0})rc ]] && { source ~/.$(basename ${0})rc; }
+
+: ${rc_file:="${HOME}/.skeleton_bash_rc"}
+if [[ -r "${rc_file}" ]]; then
+  if ( cd $( dirname $(realpath "$rc_file")); git diff-index --quiet HEAD -- ) && \
+     ( cd $( dirname $(realpath "$rc_file")); git ls-files $(realpath "$rc_file") --error-unmatch ); then
+    source "${rc_file}"
+  else
+    echo "the rc file was either not in git or uncommitted changes found" >&2
+    exit 1
+  fi
+fi
+
 : ${hello_file:="$(dirname $(realpath $0))/hello"}
 : ${a:="default for var a"}
 : ${trace:=0}
