@@ -46,6 +46,13 @@ fi
 : ${a:="default for var a"}
 : ${trace:=0}
 
+multiline_variable=$(cat <<EOF
+{
+"a": 4
+}
+EOF
+)
+
 if [[ "$trace" -eq 1 ]];then
   PS4='${LINENO}: '
   set -x
