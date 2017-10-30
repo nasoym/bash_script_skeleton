@@ -65,6 +65,19 @@ if [[ "$#" -eq 0 ]];then
 elif [[ "$1" == "hello" ]];then shift
   cat $hello_file
 
+elif [[ "$1" == "stdin" ]];then shift
+  echo "read stdin"
+  if [[ -p /dev/stdin ]]; then ## -p : file is a pipe
+  # if [[ -s /dev/stdin ]]; then
+    : ${intput_text:="$(cat)"}
+  fi
+  : ${intput_text:="$@"}
+  echo "intput_text: >${intput_text}<"
+
+elif [[ "$1" == "stdin_recursive" ]];then shift
+  $0 stdin
+  echo "abcd" | $0 stdin
+
 elif [[ "$1" == "helper" ]];then shift
   helper
 
