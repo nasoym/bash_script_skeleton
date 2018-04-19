@@ -54,7 +54,7 @@ multiline_variable=$(cat <<EOF
 EOF
 )
 
-if [[ "$trace" -eq 1 ]];then
+if [[ "${trace:=0}" -eq 1 ]];then
   PS4='${LINENO}: '
   set -x
 fi
