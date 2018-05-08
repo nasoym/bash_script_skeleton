@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+set -o errexit  # abort when any commands exits with error
+set -o pipefail # abort when any command in a pipe exits with error
+trap 'echo status:$? line:$LINENO line:$BASH_LINENO command:"$BASH_COMMAND" functions:$(printf " %s" ${FUNCNAME[@]:-})' ERR
+
+if [[ "${trace:=0}" -eq 1 ]];then
+  PS4='${LINENO}: '
+  set -x
+  export trace
+fi
+
+echo "\$0:  $0"
+echo "\$BASH_SOURCE:  $BASH_SOURCE"
+echo "\$BASH_SOURCE:  $( dirname $BASH_SOURCE )"
+
+
+
+# if [[ -p /dev/stdin ]]; then ## -p : file is a pipe
+#   : ${input:="$(cat)"} ## structure cluster worker ip
+# fi
+# for a in "$input"; do
+#   if [[ -z "$a" ]]; then echo YYYYY; break; fi
+#   echo "$a" | awk '{print $1}'
+# done
+
+# while read a; do
+#   # if [[ -z "$a" ]]; then echo YYYYY; break; fi
+#   echo "$a" | awk '{print $1}'
+#   echo "----$a"
+# done <<< "${input}"
+# exit 0
+
+
+# let i=0 || true
+# echo "$i"
+# let i++ 
+# echo "$i"
+# exit
+
+# let i=10 || true
+# if ! let i-- ; then
+#   echo foo $i dddddddddd
+# fi
+# if ! let i-- ; then
+#   echo foo $i dddddddddd
+# fi
+#
+# exit
+
+
+if [[ "${a:="$(date +%Y)"}" == "2018" ]] ;then
+  echo "is 2018"
+else
+  echo "is not 2018"
+fi
+echo "====$a===="
+exit
+
+: ${a:="$(date +%Y)"}
+echo "$a"
+exit
+
+# let i--
+# echo $i
+# exit
+# while let i--; do
+while true; do
+  echo foo $i
+  if let i-- ; then
+    echo foo $i dddddddddd
+    break
+  fi
+  sleep 1
+done
+exit
+
+
+
+
+A=""
+( sleep 2 ; false ) & A+="$! "
+( sleep 2 ; true ) & A+="$! "
+( sleep 2 ; false ) & A+="$! "
+
+# echo "-------------------------"
+# jobs -pr
+# echo "-------------------------"
+for a in $(jobs -pr); do
+  # echo "------ $a ----"
+  # wait $a && echo "ok:$?" || echo "fail:$?"
+  wait $a
+done
+
+# for a in $A; do
+#   wait $a && echo "ok:$?" || echo "fail:$?"
+# done
+
+echo alles okay
+
+
+
+
