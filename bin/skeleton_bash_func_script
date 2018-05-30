@@ -10,6 +10,7 @@ trap 'echo status:$? line:$LINENO line:$BASH_LINENO command:"$BASH_COMMAND" func
 if [[ "${trace:=0}" -eq 1 ]];then
   PS4='${LINENO}: '
   set -x
+  export trace
 fi
 
 while getopts "mh?" options; do case $options in
