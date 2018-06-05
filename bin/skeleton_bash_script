@@ -5,6 +5,7 @@ set -o errexit  # abort when any commands exits with error
 set -o pipefail # abort when any command in a pipe exits with error
 set -o nounset  # abort when any unset variable is used
 set -f # prevent bash from expanding glob
+set -o errtrace # inherits trap on ERR in function and subshell
 #short: set -eufo pipefail
 trap 'echo "$0: line ${LINENO}: exiting because of error";exit 1' ERR
 trap 'echo "finalize"' EXIT
