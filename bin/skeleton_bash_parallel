@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -o errexit  # abort when any commands exits with error
+set -o pipefail # abort when any command in a pipe exits with error
+set -o nounset  # abort when any unset variable is used
+set -f # prevent bash from expanding glob
+set -o errtrace # inherits trap on ERR in function and subshell
+trap 'echo status:$? line:$LINENO line:$BASH_LINENO command:"$BASH_COMMAND" functions:$(printf " %s" ${FUNCNAME[@]:-}) >&2; exit 1' ERR
+
+if [[ "${trace:=0}" -eq 1 ]];then
+  PS4='${LINENO}: '
+  set -x
+  export trace
+fi
+
+(
+  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+  wait
+) \
+  | sed -e 's/^/AAA- /g'
+
+
+
+
