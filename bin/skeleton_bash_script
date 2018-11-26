@@ -93,6 +93,12 @@ elif [[ "$1" == "one" ]];then shift
   : ${one:="${1:-"blabla"}"}
   echo "----${1:-"blabla"}----"
   echo "one: $one"
+  
+elif [[ "$1" == "retry" ]];then shift
+  : ${retry:=4}
+  echo "retry: ${retry}"
+  let retry--
+  retry="${retry}" ${0} retry
 
 elif [[ "$1" == "password" ]];then shift
   echo "password:$password"
