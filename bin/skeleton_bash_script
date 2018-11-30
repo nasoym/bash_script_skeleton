@@ -112,6 +112,12 @@ elif [[ "$1" == "error" ]];then shift
   false
   echo "after false"
 
+elif [[ "$1" == "if_test" ]];then shift
+  echo "before test"
+  [[ "a" == "a" ]]
+  echo "after test"
+
+
 elif [[ "$1" =~ ^[0-9]*$ ]];then 
   echo "number input: $1"
 
