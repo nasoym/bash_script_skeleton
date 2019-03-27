@@ -13,14 +13,41 @@ if [[ "${trace:=0}" -eq 1 ]];then
   export trace
 fi
 
-(
-  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
-  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
-  ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
-  wait
-) \
-  | sed -e 's/^/AAA- /g'
+# (
+#   ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+#   ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+#   ( for i in {1..10}; do echo $i ;sleep 1 ; done ) &
+#   wait
+# ) \
+#   | sed -e 's/^/AAA- /g'
+#
 
+background() {
+  line="$1"; shift
+  echo "---- pid:$$ ${line}" 
+  for i in $(seq 1 ${line}); do
+    echo "--i:${i}"
+    sleep 1
+  done
+  if [[ "${line}" == "3" ]];then
+    echo "!!!!"
+    return 1
+  else
+    return 0
+  fi
+}
+export -f background
+  echo "----main: pid:$$ " 
 
+  # for line in $(seq 1 10); do
+  #   background ${line} &
+  # done
+  # echo "waiting"
+  # echo "jobs: $(jobs -rp)"
+  # wait $(jobs -rp)
+  # echo "done waiting"
 
+  seq 1 10 \
+  | parallel -u -j2 -v --halt-on-error now,fail=1 'background {}' ; echo $?
+  echo "done"
 
