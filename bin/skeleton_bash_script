@@ -60,6 +60,12 @@ multiline_variable=$(cat <<EOF
 }
 EOF
 )
+multiline_variable=$(cat <<'EOF'
+{
+"a": "$$"
+}
+EOF
+)
 
 if [[ "$#" -eq 0 ]];then
   :
